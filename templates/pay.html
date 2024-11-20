@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرداخت</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    {% load cart_extras %}
+    <style>
+        .order-table img {
+            width: 100px;
+            height: auto;
+        }
+        .total-price {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center">پرداخت</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table order-table">
+                    <thead>
+                        <tr>
+                            <th>تصویر</th>
+                            <th>نام محصول</th>
+                            <th>تعداد</th>
+                            <th>قیمت واحد</th>
+                            <th>جمع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            <tr>
+                                <td>
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                    {% else %}
+                                        <img src="{% static 'default_image.png' %}" alt="Default Image">
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.unit_price }} تومان</td>
+                                <td>{{ item.unit_price|mul:item.quantity }} تومان</td> <!-- جمع قیمت هر محصول -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="total-price text-right">
+                    جمع فاکتور: {{ order.total_price }} تومان <!-- جمع فاکتور -->
+                </div>
+                <div class="text-right mt-4">
+                    <a href="/order/change_status/{{order.id}}/">
+                        <button type="button" class="btn btn-success">پرداخت {{ order.total_price }} تومان</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

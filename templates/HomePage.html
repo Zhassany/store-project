@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>محصولات</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            width: 200px;
+            float: left;
+            background-color: #abcef1;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 100vh;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            margin: 10px 0;
+        }
+        nav ul li a, nav ul li form button {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: block;
+            padding: 10px;
+            background-color: #cf6051;
+            border-radius: 4px;
+        }
+        nav ul li a:hover, nav ul li form button:hover {
+            color: #fff;
+            background-color: #007bff;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .username {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="username">نام کاربری: {{ request.user.username }}</div>
+        <ul>
+            <li><a href="/">خانه</a></li>
+            <li><a href="/category/search/">جستجو</a></li>
+            {% if is_authenticated %}
+                {% if is_admin %}
+                    <li><a href="/admin/">پنل مدیریت</a></li>
+                {% endif %}
+                <li><a href="/order/cart/">سبد خرید</a></li>
+                <li><a href="/order/orders/">سفارشات</a></li>
+                <li>
+                    <form method="post" action="/user/logout/" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background:none; border:none; color:#333; font-weight:bold;">خروج</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="/user/login/">ورود</a></li>
+                <li><a href="/user/register/">ثبت نام</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="content">
+        <div class="container mt-5">
+            {% for category in categorys %}
+                {% if category.product_set.count > 0 %}
+                    <a href="/category/{{category.id}}" style="color: black;">
+                        <div style="background-color: chocolate;" class="card mb-4 shadow-sm">
+                            <h1 class="text-center">{{ category.name }}</h1>
+                        </div>
+                    </a>
+
+                    <div class="row">
+                        {% for product in category.product_set.all|slice:":6" %}
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                                <a href="/category/product/{{product.id}}" style="color: black;">
+                                    <div class="card mb-4 shadow-sm">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                        {% else %}
+                                            <img src="{% static 'default_image.png' %}" class="card-img-top" alt="Default Image">
+                                        {% endif %}
+                                        <div class="card-body" style="background-color: cornflowerblue;">
+                                            <h5 class="card-title">{{ product.name }}</h5>
+                                            <p class="card-text"><strong>قیمت:</strong> {% if product.stock == 0 %}ناموجود{% else %}{{ product.price }} تومان{% endif %}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

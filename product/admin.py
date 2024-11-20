@@ -12,7 +12,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['image', 'name', 'price', 'stock']
+    list_display = ['name', 'price', 'stock']
     search_fields = ['name']
     list_filter = (('price', NumericRangeFilter),('stock', NumericRangeFilter),)
-    # list_filter = ()

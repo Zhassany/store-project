@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - محصول</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% block extra_styles %}
+    <style>
+        .product-container {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .product-img {
+            max-width: 200px;
+            margin: 20px;
+        }
+        .product-details {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .btn-group span {
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            display: inline-block;
+            line-height: 2.2em;
+            width: 50px;
+            text-align: center;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <div class="container mt-5 product-container">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+        {% else %}
+            <img src="{% static 'default_image.png' %}" class="product-img" alt="Default Image">
+        {% endif %}
+        <div class="product-details">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text"><strong>قیمت:</strong> {{ product.price }} تومان</p>
+            <p class="card-text"><strong>موجودی:</strong> {{ product.stock }}</p>
+            {% if product.stock == 0 %}
+                <p class="text-danger">ناموجود</p>
+            {% else %}
+                {% if not in_cart %}
+                    <a href="/order/add_cart/{{ product.id }}" class="btn btn-primary">افزودن به سبد خرید</a>
+                {% else %}
+                    <div class="btn-group" role="group" aria-label="Cart Actions">
+                        <a href="/order/sub_cart/{{ product.id }}" class="btn btn-secondary">-</a>
+                        <span>{{ quantity_in_cart }}</span>
+                        <a href="/order/add_cart/{{ product.id }}" class="btn btn-secondary">+</a>
+                        <a href="/order/del_cart/{{ product.id }}" class="btn btn-danger">حذف</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

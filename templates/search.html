@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جستجوی محصولات</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+</head>
+<body>
+    {% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center">جستجوی محصولات</h1>
+        <form method="get" action="{% url 'search' %}" class="mb-5">
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="q">نام محصول</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="min_price">حداقل قیمت</label>
+                    <input type="number" class="form-control" id="min_price" name="min_price" value="{{ min_price }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="max_price">حداکثر قیمت</label>
+                    <input type="number" class="form-control" id="max_price" name="max_price" value="{{ max_price }}">
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="in_stock">موجودی</label>
+                    <select class="form-control" id="in_stock" name="in_stock">
+                        <option value="">همه</option>
+                        <option value="true" {% if in_stock == 'true' %}selected{% endif %}>موجود</option>
+                        <option value="false" {% if in_stock == 'false' %}selected{% endif %}>ناموجود</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="category">دسته‌بندی</label>
+                    <select class="form-control" id="category" name="category">
+                        <option value="">همه</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">جستجو</button>
+        </form>
+        
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{% static 'default_image.png' %}" class="card-img-top" alt="Default Image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text"><strong>قیمت:</strong> {{ product.price }} تومان</p>
+                            <p class="card-text"><strong>موجودی:</strong> {{ product.stock }}</p>
+                            <a href="/product/{{ product.id }}" class="btn btn-primary">مشاهده محصول</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

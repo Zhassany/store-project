@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سبد خرید</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    {% load cart_extras %}
+    <style>
+        .cart-table img {
+            width: 100px;
+            height: auto;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-controls button {
+            margin: 0 5px;
+        }
+        .total-price {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center">سبد خرید</h1>
+        <div class="row">
+            <div class="col-md-12">
+                {% if cart %}
+                    <table class="table cart-table">
+                        <thead>
+                            <tr>
+                                <th>تصویر</th>
+                                <th>نام محصول</th>
+                                <th>تعداد</th>
+                                <th>قیمت</th>
+                                <th>عملیات</th>
+                                <th>مجموع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item_id, item in cart.items %}
+                                <tr>
+                                    <td>
+                                        {% if item.image_url %}
+                                            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                                        {% else %}
+                                            <img src="{% static 'default_image.png' %}" alt="Default Image">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.name }}</td>
+                                    <td class="quantity-controls">
+                                        <form method="post" action="{% url 'sub_cart' item_id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-secondary btn-sm">-</button>
+                                        </form>
+                                        {{ item.quantity }}
+                                        <form method="post" action="{% url 'add_cart' item_id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-secondary btn-sm">+</button>
+                                        </form>
+                                    </td>
+                                    <td>{{ item.price }} تومان</td>
+                                    <td>
+                                        <form method="post" action="{% url 'del_cart' item_id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash-alt"></i> حذف
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>{{ item.price|mul:item.quantity }} تومان</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-price text-right">
+                        مجموع کل: {{ total_price }} تومان
+                    </div>
+
+                    <div class="row mt-5" id="order-form">
+                        <div class="col-md-12">
+                            <h2 class="text-center">ثبت سفارش</h2>
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary">ثبت سفارش</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>سبد خرید شما خالی است.</p>
+                    <img src="{% static 'not.png' %}" alt="کالا وجود ندارد">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

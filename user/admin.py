@@ -8,3 +8,4 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['email', 'username', 'last_login', 'phone_number']
     ordering = ['last_login']
     search_fields = ['email', 'username', 'phone_number']
+    exclude = ['groups', 'user_permissions']

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سفارشات من</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .order-table th, .order-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .order-status {
+            font-weight: bold;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .order-row a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <h1 class="text-center">سفارشات من</h1>
+        <table class="table table-bordered table-hover order-table">
+            <thead>
+                <tr>
+                    <th>ID سفارش</th>
+                    <th>خلاصه سفارش</th>
+                    <th>تاریخ سفارش</th>
+                    <th> جمع فاکتور </th>
+                    <th>وضعیت سفارش</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="order-row">
+                    <td><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></td>
+                    <td><a href="{% url 'order_detail' order.id %}">{{ order.items.first.product.name }}</a></td>
+                    <td><a href="{% url 'order_detail' order.id %}">{{ order.order_date|date:"Y-m-d H:i" }}</a></td>
+                    <td><a href="{% url 'order_detail' order.id %}">{{ order.total_price }}</a></td>
+                    <td><a href="{% url 'order_detail' order.id %}">{{ order.status }}</a></td>
+                    <td>
+                        {% if order.status == 'Pending' %}
+                        <form method="post" action="{% url 'delete_order' order.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-delete btn-sm">حذف</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not orders %}
+        <p class="text-center">شما هنوز سفارشی ثبت نکرده‌اید.</p>
+        {% endif %}
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

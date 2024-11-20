@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جزئیات سفارش</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .order-item-table th, .order-item-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .order-item-image {
+            width: 100px;
+            height: auto;
+        }
+        .total-price {
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: right;
+        }
+        .address {
+            margin-top: 20px;
+        }
+        .btn-pay {
+            background-color: #28a745;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+    {%load static%}
+    {% load cart_extras %}
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <h1 class="text-center">جزئیات سفارش</h1>
+        <h2>شناسه سفارش : {{ order.id }}</h2>
+        <table class="table table-bordered table-hover order-item-table">
+            <thead>
+                <tr>
+                    <th>تصویر</th>
+                    <th>نام محصول</th>
+                    <th>قیمت</th>
+                    <th>تعداد</th>
+                    <th>قیمت کل</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                <tr>
+                    <td>
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="order-item-image">
+                        {% else %}
+                        <img src="{% static 'default_image.png' %}" alt="Default Image" class="order-item-image">
+                        {% endif %}
+                    </td>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.unit_price }} تومان</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price|mul:item.quantity }} تومان</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total-price">
+            مبلغ کل سفارش: {{ order.total_price }} تومان
+        </div>
+        <div class="address">
+            <h3>آدرس</h3>
+            <p>{{ order.shipping_address }}</p>
+        </div>
+        {% if order.status == 'Pending' %}
+        <form method="post" action="/order/change_status/{{order.id}}/">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-pay">پرداخت</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرداخت موفق</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta http-equiv="refresh" content="3;url=/order/orders"> <!-- انتقال اتوماتیک پس از ۳ ثانیه -->
+    {% load static %}
+    <style>
+        .success-message {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .success-message img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-message">
+            <h1>پرداخت موفق</h1>
+            <p>پرداخت شما با موفقیت انجام شد. شما به زودی به صفحه سفارشات منتقل خواهید شد.</p>
+            <img src="{% static 'success.png' %}" alt="پرداخت موفق"> <!-- تصویر پیش فرض -->
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.name }} - محصولات</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {%load static%}
+</head>
+<body>
+    {% block content %}
+    <div class="container mt-5">
+        {% if category.product_set.count > 0 %}
+            <div style="background-color: chocolate;" class="card mb-4 shadow-sm">
+                <h1 class="text-center">{{ category.name }}</h1>
+            </div>
+            <div class="row">
+                {% for product in category.product_set.all %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <a href="/category/product/{{product.id}}" style="color: black;">
+                            <div class="card mb-4 shadow-sm">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                                {% else %}
+                                    <img src="{% static 'default_image.png' %}" class="card-img-top" alt="Default Image">
+                                {% endif %}
+                                <div class="card-body" style="background-color: cornflowerblue;">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text"><strong>قیمت:</strong> {% if product.stock == 0 %}ناموجود{% else %}{{ product.price }} تومان{% endif %}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
